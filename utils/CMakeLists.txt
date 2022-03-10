@@ -16,5 +16,3 @@ endforeach()
 #add_executable(aruco_test_board aruco_test_board.cpp)
 #add_executable(aruco_board_pix2meters aruco_board_pix2meters.cpp)
 #add_executable(aruco_test_board_stability aruco_test_board_stability.cpp)
-
-install(TARGETS aruco_test aruco_create_marker RUNTIME DESTINATION bin)
