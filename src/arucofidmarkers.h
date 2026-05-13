@@ -109,7 +109,7 @@ public:
 
 private:
   
-    static  cv::Mat rotate(const cv::Mat & in);
+    static  void rotate(cv::Mat& out, const cv::Mat& in);
     static  int hammDistMarker(cv::Mat  bits);
     static  int analyzeMarkerImage(cv::Mat &grey,int &nRotations);
     static  bool correctHammMarker(cv::Mat &bits);
