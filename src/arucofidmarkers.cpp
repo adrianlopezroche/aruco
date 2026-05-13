@@ -250,10 +250,8 @@ cv::Mat  FiducidalMarkers::createBoardImage_Frame( Size gridSize,int MarkerSize,
  *
  *
  ************************************/
-Mat FiducidalMarkers::rotate(const Mat  &in)
+void FiducidalMarkers::rotate(Mat &out, const Mat  &in)
 {
-    Mat out;
-    in.copyTo(out);
     for (int i=0;i<in.rows;i++)
     {
         for (int j=0;j<in.cols;j++)
@@ -261,7 +259,6 @@ Mat FiducidalMarkers::rotate(const Mat  &in)
             out.at<uchar>(i,j)=in.at<uchar>(in.cols-j-1,i);
         }
     }
-    return out;
 }
 
 
@@ -343,8 +340,9 @@ int FiducidalMarkers::analyzeMarkerImage(Mat &grey,int &nRotations)
     }
 
     //now,
-    vector<int> markerInfo(5);
-    Mat _bits=Mat::zeros(5,5,CV_8UC1);
+    //vector<int> markerInfo(5);
+    std::array<std::array<uchar, 5 * 5>, 4> bits_data{};
+    Mat _bits=Mat(5, 5, CV_8UC1, bits_data[0].data());
     //get information(for each inner square, determine if it is  black or white)
 
     for (int y=0;y<5;y++)
@@ -362,7 +360,7 @@ int FiducidalMarkers::analyzeMarkerImage(Mat &grey,int &nRotations)
 // 		printMat<uchar>( _bits,"or mat");
 
     //checkl all possible rotations
-    Mat _bitsFlip;
+    //Mat _bitsFlip;
     Mat Rotations[4];
     Rotations[0]=_bits;
     int dists[4];
@@ -371,7 +369,8 @@ int FiducidalMarkers::analyzeMarkerImage(Mat &grey,int &nRotations)
     for (int i=1;i<4;i++)
     {
         //rotate
-        Rotations[i]=rotate(Rotations[i-1]);
+        Rotations[i]=Mat(5, 5, CV_8UC1, bits_data[i].data());
+        rotate(Rotations[i], Rotations[i-1]);
         //get the hamming distance to the nearest possible word
         dists[i]=hammDistMarker( Rotations[i]) ;
         if (dists[i]<minDist.first)
